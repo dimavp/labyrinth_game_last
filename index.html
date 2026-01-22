@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass the Labyrinth</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="game-container">
+        <h1>PASS THE LABYRINTH</h1>
+        <div class="controls-info">
+            <p>Use <strong>ARROW KEYS</strong> to move the Capybara.</p>
+            <p>Reach the <strong>green zone</strong> to win!</p>
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="mazeCanvas" width="600" height="600"></canvas>
+            <div id="win-overlay" class="hidden">
+                <div class="win-message">
+                    <h2>LEVEL COMPLETE!</h2>
+                    <button id="btn-next">Next Level</button>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-generate" class="btn-main">NEW MAZE</button>
+
+        <!-- Hidden asset -->
+        <img src="capybara.png" id="capybara-sprite" style="display: none;">
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
