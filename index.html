@@ -4,33 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pass the Labyrinth</title>
+    <title>Лабиринт для Иришки</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="game-container">
-        <h1>PASS THE LABYRINTH</h1>
+        <h1>ЛАБИРИНТ ДЛЯ ИРИШКИ</h1>
         <div class="controls-info">
-            <p>Use <strong>ARROW KEYS</strong> to move the Capybara.</p>
-            <p>Reach the <strong>green zone</strong> to win!</p>
+            <p>Используй <strong>СТРЕЛКИ</strong> для движения капибары.</p>
+            <p>Доберись до <strong>зеленой зоны</strong> чтобы победить!</p>
         </div>
 
         <div class="canvas-wrapper">
             <canvas id="mazeCanvas" width="600" height="600"></canvas>
             <div id="win-overlay" class="hidden">
                 <div class="win-message">
-                    <h2>LEVEL COMPLETE!</h2>
-                    <button id="btn-next">Next Level</button>
+                    <h2>УРОВЕНЬ ПРОЙДЕН!</h2>
+                    <button id="btn-next">Следующий уровень</button>
                 </div>
             </div>
         </div>
 
-        <button id="btn-generate" class="btn-main">NEW MAZE</button>
+        <button id="btn-generate" class="btn-main">НОВЫЙ ЛАБИРИНТ</button>
 
         <!-- Hidden asset -->
         <img src="capybara.png" id="capybara-sprite" style="display: none;">
+
+         <!-- Touch Controls for Mobile -->
+         <div class="touch-controls">
+            <div class="dpad-row">
+                <button id="btn-up" class="dpad-btn">▲</button>
+            </div>
+            <div class="dpad-row">
+                <button id="btn-left" class="dpad-btn">◀</button>
+                <div class="dpad-center"></div>
+                <button id="btn-right" class="dpad-btn">▶</button>
+            </div>
+            <div class="dpad-row">
+                <button id="btn-down" class="dpad-btn">▼</button>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

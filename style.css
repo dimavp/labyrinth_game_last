@@ -115,3 +115,67 @@ canvas {
 #btn-next:hover {
     background: #f39c12;
 }
+
+/* Mobile Controls */
+.touch-controls {
+    display: none; /* Hidden by default on desktop */
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.dpad-row {
+    display: flex;
+    gap: 5px;
+}
+
+.dpad-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid #ecf0f1;
+    color: #ecf0f1;
+    border-radius: 10px;
+    cursor: pointer;
+    touch-action: manipulation; /* Prevent zoom on double tap */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.dpad-btn:active {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(0.95);
+}
+
+.dpad-center {
+    width: 60px;
+    height: 60px;
+}
+
+/* Media Query for Mobile */
+@media (max-width: 768px) {
+    .touch-controls {
+        display: flex;
+    }
+
+    .controls-info {
+        display: none; /* Hide keyboard info on mobile */
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    #mazeCanvas {
+        width: 100%;
+        max-width: 350px; /* Limit size on phone */
+        height: auto;
+    }
+
+    .game-container {
+        padding: 10px;
+    }
+}

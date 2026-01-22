@@ -176,34 +176,24 @@ function draw() {
 }
 
 // Controls
-document.addEventListener('keydown', (e) => {
+// Controls
+function movePlayer(dx, dy) {
     if (isGameWon) return;
 
-    let nextCol = player.col;
-    let nextRow = player.row;
+    let nextCol = player.col + dx;
+    let nextRow = player.row + dy;
     let currentCell = grid[index(player.col, player.row)];
     let moved = false;
 
-    if (e.key === 'ArrowUp') {
-        if (!currentCell.walls[0]) {
-            nextRow--;
-            moved = true;
-        }
-    } else if (e.key === 'ArrowRight') {
-        if (!currentCell.walls[1]) {
-            nextCol++;
-            moved = true;
-        }
-    } else if (e.key === 'ArrowDown') {
-        if (!currentCell.walls[2]) {
-            nextRow++;
-            moved = true;
-        }
-    } else if (e.key === 'ArrowLeft') {
-        if (!currentCell.walls[3]) {
-            nextCol--;
-            moved = true;
-        }
+    // Check walls
+    if (dy === -1) { // Up
+        if (!currentCell.walls[0]) moved = true;
+    } else if (dx === 1) { // Right
+        if (!currentCell.walls[1]) moved = true;
+    } else if (dy === 1) { // Down
+        if (!currentCell.walls[2]) moved = true;
+    } else if (dx === -1) { // Left
+        if (!currentCell.walls[3]) moved = true;
     }
 
     if (moved) {
@@ -212,6 +202,31 @@ document.addEventListener('keydown', (e) => {
         draw();
         checkWin();
     }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') movePlayer(0, -1);
+    else if (e.key === 'ArrowRight') movePlayer(1, 0);
+    else if (e.key === 'ArrowDown') movePlayer(0, 1);
+    else if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+});
+
+// Touch Controls
+document.getElementById('btn-up').addEventListener('pointerdown', (e) => {
+    e.preventDefault(); // Prevent scrolling
+    movePlayer(0, -1);
+});
+document.getElementById('btn-right').addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    movePlayer(1, 0);
+});
+document.getElementById('btn-down').addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    movePlayer(0, 1);
+});
+document.getElementById('btn-left').addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    movePlayer(-1, 0);
 });
 
 function checkWin() {
