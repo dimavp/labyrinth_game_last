@@ -165,31 +165,6 @@ canvas {
     background: #f39c12;
 }
 
-/* Swipe hint on canvas */
-.swipe-hint {
-    display: none;
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.6);
-    color: #ecf0f1;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 10px;
-    pointer-events: none;
-    animation: fadeInOut 3s ease-in-out;
-    white-space: nowrap;
-    z-index: 5;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; }
-    15% { opacity: 1; }
-    70% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
 /* Mobile Controls */
 .touch-controls {
     display: none; /* Hidden by default on desktop */
@@ -228,68 +203,10 @@ canvas {
     height: 60px;
 }
 
-/* Media Query for Tablet (11" ~ 768px-1200px) */
-@media (min-width: 769px) and (max-width: 1200px) {
-    .touch-controls {
-        display: flex;
-    }
-
-    .swipe-hint {
-        display: block;
-    }
-
-    .controls-info p:first-child {
-        display: none; /* Hide keyboard hint, show stylus hint instead */
-    }
-
-    .dpad-btn {
-        width: 70px;
-        height: 70px;
-        font-size: 28px;
-        border-radius: 14px;
-        background-color: rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(236, 240, 241, 0.5);
-    }
-
-    .dpad-btn:active {
-        background-color: rgba(46, 204, 113, 0.4);
-        border-color: #2ecc71;
-    }
-
-    .dpad-center {
-        width: 70px;
-        height: 70px;
-    }
-
-    h1 {
-        font-size: 22px;
-    }
-
-    #mazeCanvas {
-        max-width: 500px;
-        width: 100%;
-        height: auto;
-    }
-
-    .canvas-wrapper {
-        touch-action: none; /* Prevent scroll while swiping on canvas */
-        cursor: crosshair;
-    }
-
-    .game-container {
-        padding: 15px;
-        gap: 15px;
-    }
-}
-
 /* Media Query for Mobile */
 @media (max-width: 768px) {
     .touch-controls {
         display: flex;
-    }
-
-    .swipe-hint {
-        display: block;
     }
 
     .controls-info {
@@ -305,10 +222,6 @@ canvas {
         width: 100%;
         max-width: 350px; /* Limit size on phone */
         height: auto;
-    }
-
-    .canvas-wrapper {
-        touch-action: none;
     }
 
     .game-container {

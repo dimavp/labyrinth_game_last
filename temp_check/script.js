@@ -246,56 +246,6 @@ document.getElementById('btn-left').addEventListener('pointerdown', (e) => {
     movePlayer(-1, 0);
 });
 
-// Swipe/Stylus Controls on Canvas
-let swipeStartX = null;
-let swipeStartY = null;
-const SWIPE_THRESHOLD = 20; // Minimum px to register a swipe
-
-canvas.addEventListener('pointerdown', (e) => {
-    // Work with pen (stylus), touch, and mouse
-    if (e.pointerType === 'pen' || e.pointerType === 'touch' || e.pointerType === 'mouse') {
-        swipeStartX = e.clientX;
-        swipeStartY = e.clientY;
-        e.preventDefault();
-    }
-});
-
-canvas.addEventListener('pointermove', (e) => {
-    if (swipeStartX === null) return;
-    e.preventDefault(); // Prevent scrolling while swiping
-});
-
-canvas.addEventListener('pointerup', (e) => {
-    if (swipeStartX === null) return;
-
-    const dx = e.clientX - swipeStartX;
-    const dy = e.clientY - swipeStartY;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-
-    // Only register if swipe distance exceeds threshold
-    if (Math.max(absDx, absDy) >= SWIPE_THRESHOLD) {
-        if (absDx > absDy) {
-            // Horizontal swipe
-            movePlayer(dx > 0 ? 1 : -1, 0);
-        } else {
-            // Vertical swipe
-            movePlayer(0, dy > 0 ? 1 : -1);
-        }
-    }
-
-    swipeStartX = null;
-    swipeStartY = null;
-});
-
-canvas.addEventListener('pointercancel', () => {
-    swipeStartX = null;
-    swipeStartY = null;
-});
-
-// Prevent default touch behavior on canvas to avoid scrolling
-canvas.style.touchAction = 'none';
-
 function checkWin() {
     if (player.col === goal.col && player.row === goal.row) {
         isGameWon = true;
@@ -313,32 +263,19 @@ btnNext.addEventListener('click', () => {
 });
 
 // Difficulty Selection
-function initDifficultyButtons() {
-    const difficultyButtons = document.querySelectorAll('.btn-difficulty');
-    console.log('Found difficulty buttons:', difficultyButtons.length);
-
-    difficultyButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            console.log('Difficulty button clicked:', btn.dataset.level);
-            // Remove active class from all buttons
-            difficultyButtons.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
-            btn.classList.add('active');
-            // Update difficulty
-            currentDifficulty = parseInt(btn.dataset.level);
-            console.log('New difficulty:', currentDifficulty);
-            // Generate new maze with new difficulty
-            setup();
-        });
+const difficultyButtons = document.querySelectorAll('.btn-difficulty');
+difficultyButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        difficultyButtons.forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        btn.classList.add('active');
+        // Update difficulty
+        currentDifficulty = parseInt(btn.dataset.level);
+        // Generate new maze with new difficulty
+        setup();
     });
-}
-
-// Initialize difficulty buttons when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDifficultyButtons);
-} else {
-    initDifficultyButtons();
-}
+});
 
 // Initial Start
 // Wait for image to load to draw the first time correctly
