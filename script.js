@@ -193,57 +193,114 @@ function draw() {
 }
 
 // Controls
-// Controls
-function movePlayer(dx, dy) {
+let moveInterval = null;
+
+function slidePlayer(startX, startY) {
     if (isGameWon) return;
 
-    let nextCol = player.col + dx;
-    let nextRow = player.row + dy;
+    let dx = startX;
+    let dy = startY;
     let currentCell = grid[index(player.col, player.row)];
-    let moved = false;
+    let canMoveInit = false;
 
-    // Check walls
-    if (dy === -1) { // Up
-        if (!currentCell.walls[0]) moved = true;
-    } else if (dx === 1) { // Right
-        if (!currentCell.walls[1]) moved = true;
-    } else if (dy === 1) { // Down
-        if (!currentCell.walls[2]) moved = true;
-    } else if (dx === -1) { // Left
-        if (!currentCell.walls[3]) moved = true;
+    if (dy === -1 && !currentCell.walls[0]) canMoveInit = true;
+    else if (dx === 1 && !currentCell.walls[1]) canMoveInit = true;
+    else if (dy === 1 && !currentCell.walls[2]) canMoveInit = true;
+    else if (dx === -1 && !currentCell.walls[3]) canMoveInit = true;
+
+    // Если сразу стена - никуда не едем
+    if (!canMoveInit) return;
+
+    // Если уже едем, прерываем старое движение и начинаем новое
+    if (moveInterval) clearInterval(moveInterval);
+
+    // Делаем первый шаг мгновенно
+    moveStep();
+
+    // Запускаем таймер для непрерывного скольжения (если не победили и не уперлись сразу)
+    if (moveInterval !== null || !isGameWon) {
+        moveInterval = setInterval(moveStep, 45); // Скорость: 45 мс на клетку
     }
 
-    if (moved) {
-        player.col = nextCol;
-        player.row = nextRow;
-        draw();
-        checkWin();
+    function moveStep() {
+        let cell = grid[index(player.col, player.row)];
+        let canMoveForward = false;
+
+        // Смотрим, можно ли двигаться дальше в текущем направлении dx, dy
+        if (dy === -1 && !cell.walls[0]) canMoveForward = true;
+        else if (dx === 1 && !cell.walls[1]) canMoveForward = true;
+        else if (dy === 1 && !cell.walls[2]) canMoveForward = true;
+        else if (dx === -1 && !cell.walls[3]) canMoveForward = true;
+
+        if (canMoveForward) {
+            // Двигаемся
+            player.col += dx;
+            player.row += dy;
+            draw();
+            checkWin();
+
+            if (isGameWon) {
+                if (moveInterval) clearInterval(moveInterval);
+                moveInterval = null;
+                return;
+            }
+
+            // Мы в новой клетке. Анализируем, куда из нее можно выйти
+            let newCell = grid[index(player.col, player.row)];
+            let exits = [];
+            if (!newCell.walls[0]) exits.push({ x: 0, y: -1 });
+            if (!newCell.walls[1]) exits.push({ x: 1, y: 0 });
+            if (!newCell.walls[2]) exits.push({ x: 0, y: 1 });
+            if (!newCell.walls[3]) exits.push({ x: -1, y: 0 });
+
+            if (exits.length > 2) {
+                // ПЕРЕКРЕСТОК: 3 или 4 прохода. Нужно остановиться, чтобы дать игроку выбрать!
+                if (moveInterval) clearInterval(moveInterval);
+                moveInterval = null;
+            } else if (exits.length === 2) {
+                // ИЗГИБ ИЛИ КОРИДОР: всего 2 прохода (один откуда пришли, другой вперед)
+                // Находим куда идти дальше (не туда, откуда пришли)
+                let forwardExit = exits.find(e => !(e.x === -dx && e.y === -dy));
+                if (forwardExit) {
+                    dx = forwardExit.x;
+                    dy = forwardExit.y;
+                }
+            } else {
+                // ТУПИК: 1 проход. Останавливаемся.
+                if (moveInterval) clearInterval(moveInterval);
+                moveInterval = null;
+            }
+        } else {
+            // Уперлись в прямую стену
+            if (moveInterval) clearInterval(moveInterval);
+            moveInterval = null;
+        }
     }
 }
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp') movePlayer(0, -1);
-    else if (e.key === 'ArrowRight') movePlayer(1, 0);
-    else if (e.key === 'ArrowDown') movePlayer(0, 1);
-    else if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+    if (e.key === 'ArrowUp') slidePlayer(0, -1);
+    else if (e.key === 'ArrowRight') slidePlayer(1, 0);
+    else if (e.key === 'ArrowDown') slidePlayer(0, 1);
+    else if (e.key === 'ArrowLeft') slidePlayer(-1, 0);
 });
 
 // Touch Controls
 document.getElementById('btn-up').addEventListener('pointerdown', (e) => {
-    e.preventDefault(); // Prevent scrolling
-    movePlayer(0, -1);
+    e.preventDefault();
+    slidePlayer(0, -1);
 });
 document.getElementById('btn-right').addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    movePlayer(1, 0);
+    slidePlayer(1, 0);
 });
 document.getElementById('btn-down').addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    movePlayer(0, 1);
+    slidePlayer(0, 1);
 });
 document.getElementById('btn-left').addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    movePlayer(-1, 0);
+    slidePlayer(-1, 0);
 });
 
 // Swipe/Stylus Controls on Canvas
@@ -277,10 +334,10 @@ canvas.addEventListener('pointerup', (e) => {
     if (Math.max(absDx, absDy) >= SWIPE_THRESHOLD) {
         if (absDx > absDy) {
             // Horizontal swipe
-            movePlayer(dx > 0 ? 1 : -1, 0);
+            slidePlayer(dx > 0 ? 1 : -1, 0);
         } else {
             // Vertical swipe
-            movePlayer(0, dy > 0 ? 1 : -1);
+            slidePlayer(0, dy > 0 ? 1 : -1);
         }
     }
 
